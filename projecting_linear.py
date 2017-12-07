@@ -23,7 +23,7 @@ def project_linear(v,z):
     while len(U) > 0:
         iter += 1
         lenU = len(U)
-        i = 0;
+        i = 0
         j = 0
         G = [-1] * N
         L = [-1] * N
@@ -52,9 +52,3 @@ def project_linear(v,z):
         w[i] = np.sign(v[i]) * max(v_abs[i] - theta, 0)
     print('Iter',iter)
     return w
-
-
-
-v = [-1,1,0,0,0,0,0]
-z = 1
-print(project_linear(v,z))

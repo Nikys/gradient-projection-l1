@@ -2,7 +2,7 @@ import numpy as np
 from rb_tree import RBTree, RBTreeNode
 
 
-def theta_project_ball(T: RBTree,N,z):
+def theta_project_sparse(T: RBTree,N,z):
     """
     Finding parameter theta for projecting vector of sparse data on l1-ball
     :param T: Red-Black-tree with data
