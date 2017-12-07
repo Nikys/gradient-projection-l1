@@ -8,6 +8,7 @@ def project_linear(v,z):
     :param z: scalar that represents constraint for norm
     :return: projected vector
     """
+    eps = 1e-12
     N = len(v)
 
     v_abs = [abs(v[i]) for i in range(N)]
@@ -16,24 +17,35 @@ def project_linear(v,z):
     if v_norm <= z:
         return v
     w = [0] * N
-    U = range(N)
+    U = [i for i in range(N)]
     s = 0
     rho = 0
     iter = 0
+    G0 = [-1] * N
+    L0 = [-1] * N
     while len(U) > 0:
         iter += 1
         lenU = len(U)
         i = 0
         j = 0
-        G = [-1] * N
-        L = [-1] * N
-        k = U[rnd.randint(0, lenU - 1)]
+        G = G0[:]
+        L = L0[:]
+        k0 = rnd.randint(0, lenU - 1)
+        k = U[k0]
         ds = 0
+        if v_abs[k] < eps:
+            if k0 == lenU-1:
+                U = U[:k0]
+            elif k0 == 0:
+                U = U[1:]
+            else:
+                U = U[:k0] + U[k0 + 1:]
+            continue
+
         for m in U:
             if m == k:
                 ds += v_abs[m]
-                continue
-            if v_abs[m] >= v_abs[k]:
+            elif v_abs[m] >= v_abs[k]:
                 G[i] = m
                 ds += v_abs[m]
                 i += 1
