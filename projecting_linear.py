@@ -1,4 +1,3 @@
-import numpy as np
 import random as rnd
 
 
@@ -10,12 +9,13 @@ def project_linear(v,z):
     :return: projected vector
     """
     N = len(v)
-    v_abs = np.array([abs(v[i]) for i in range(N)])
-    v_norm = v_abs.sum()
+
+    v_abs = [abs(v[i]) for i in range(N)]
+    v_norm = sum(v_abs)
     """Taking care of case when ||v||<=z -> w=v"""
     if v_norm <= z:
         return v
-    w = np.zeros(N)
+    w = [0] * N
     U = range(N)
     s = 0
     rho = 0
@@ -49,6 +49,6 @@ def project_linear(v,z):
             U = G[:i]
     theta = (s - z) / rho
     for i in range(N):
-        w[i] = np.sign(v[i]) * max(v_abs[i] - theta, 0)
+        w[i] = max(v_abs[i] - theta, 0) if v[i] > 0 else -max(v_abs[i] - theta, 0)
     print('Iter',iter)
     return w
