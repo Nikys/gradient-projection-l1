@@ -43,13 +43,14 @@ def project_linear(v,z):
             continue
 
         for m in U:
+            iter += 1
             if m == k:
                 ds += v_abs[m]
             elif v_abs[m] >= v_abs[k]:
                 G[i] = m
                 ds += v_abs[m]
                 i += 1
-            else:
+            elif v_abs[m] > 1e-6:
                 L[j] = m
                 j += 1
         drho = i + 1
