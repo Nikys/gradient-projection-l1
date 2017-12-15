@@ -1,4 +1,4 @@
-# Efficient gradient projections on ℓ1-ball for full sparse data
+# Efficient gradient projections on ℓ1-ball for full and sparse data
 Implementation of algorithms described at paper "Efficient Projections onto the ℓ1-Ball for Learning in High Dimensions" 
 by J.Duchi, S.Shalev-Shwartz, Y.Singer and T.Chandra:
 
@@ -15,8 +15,10 @@ optimization method (otherwise, O(k\*log(n)) time estimate won't work).
 
 To use first method:
 * Just import projecting_linear.project_linear(v,z) function with vector v and scalar ℓ1-constraint z. Function will return
-projected vector. Currently uses numpy library, though will be removed lately, as it is not needed for this algorithm.
+projected vector.
 
+To use second method:
+* Push non-zero (positive, since we are using absolute values) elements of vector in red-black tree by inserting them one by one. Take into account, that 'insert' method will return node of red-black tree, and thus you may create vector of corresponding nodes.
 Second method currently is in develop.
 
 TODO: 
