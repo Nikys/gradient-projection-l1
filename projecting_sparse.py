@@ -4,7 +4,7 @@ from rb_tree import RBTree, RBTreeNode
 
 def theta_project_sparse(T: RBTree,N,z):
     """
-    Finding parameter theta for projecting vector of sparse data on l1-ball
+    Finding parameter theta for projecting positive vector of sparse data on simplex
     :param T: Red-Black-tree with data
     :param z: scalar that represents l1-constraints
     :return: theta-parameter for initializing projected vector
@@ -45,6 +45,6 @@ v = [10,20,30,80,20,0,0]
 N = len(v)
 T = RBTree()
 for v_el in v:
-    #non-zero component
+    #non-zero components, actually - positive
     if abs(v_el) > 1e-6:
         T.insert(v_el)

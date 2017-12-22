@@ -1,7 +1,7 @@
 import random as rnd
 
 
-def project_linear(v,z):
+def project_linear(v,z,is_positive=False):
     """
     Projecting vector of data on l1-ball by linear time
     :param v: vector of data
@@ -11,7 +11,10 @@ def project_linear(v,z):
     eps = 1e-12
     N = len(v)
 
-    v_abs = [abs(v[i]) for i in range(N)]
+    if is_positive:
+        v_abs = v[:]
+    else:
+        v_abs = [abs(v[i]) for i in range(N)]
     v_norm = sum(v_abs)
     """Taking care of case when ||v||<=z -> w=v"""
     if v_norm <= z:
@@ -23,6 +26,8 @@ def project_linear(v,z):
     iter = 0
     G0 = [-1] * N
     L0 = [-1] * N
+    # additional sum container that shows how much of initial elements values was "thrown away" in U->G\{k}
+    sum_lost = 0
     while len(U) > 0:
         iter += 1
         lenU = len(U)
@@ -34,7 +39,12 @@ def project_linear(v,z):
         k = U[k0]
         ds = 0
         if v_abs[k] < eps:
-            if k0 == lenU-1:
+            if v_norm - sum_lost < z:
+                # actual sum of elements in G is norm without threw elements and without previous s
+                s = v_norm - sum_lost
+                rho += lenU
+                U = []
+            elif k0 == lenU-1:
                 U = U[:k0]
             elif k0 == 0:
                 U = U[1:]
@@ -60,8 +70,15 @@ def project_linear(v,z):
             U = L[:j]
         else:
             U = G[:i]
+            sum_lost += v_abs[k]
+    if rho == 0:
+        print('Debug point')
     theta = (s - z) / rho
-    for i in range(N):
-        w[i] = max(v_abs[i] - theta, 0) if v[i] > 0 else -max(v_abs[i] - theta, 0)
+    if is_positive:
+        for i in range(N):
+            w[i] = max(v_abs[i] - theta, 0)
+    else:
+        for i in range(N):
+            w[i] = max(v_abs[i] - theta, 0) if v[i] > 0 else -max(v_abs[i] - theta, 0)
     print('Iter',iter)
     return w
