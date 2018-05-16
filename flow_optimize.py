@@ -82,8 +82,11 @@ def flow_optimize(graph, corresp_matrix, path_dict, is_project_linear = False):
                 old_val = node.key
                 T_y.delete_node(node)
                 if old_val > Theta:
-                    T_y.insert(old_val - Theta)
-                    y_i_new[i] = old_val - Theta
+                    if abs(old_val - Theta) < 1e-6:
+                        y_i_new[i] = 0
+                    else:
+                        y_elements[i] = T_y.insert(old_val - Theta)
+                        y_i_new[i] = old_val - Theta
                 else:
                     y_i_new[i] = 0
             # y_elements_dict[pair] = y_elements
@@ -113,14 +116,17 @@ def flow_optimize(graph, corresp_matrix, path_dict, is_project_linear = False):
                     x_elements[i] = T_x.insert(el)
             # x_elements_dict[pair] = x_elements
 
-            Theta = theta_project_sparse(T_x, len(x_i_new), corresp_matrix[pair], True)
+            Theta = theta_project_sparse(T_x, len(x_i_new), corresp_matrix[pair])
             for i in list(x_elements.keys()):
                 node = x_elements.pop(i)
                 old_val = node.key
                 T_x.delete_node(node)
                 if old_val > Theta:
-                    T_x.insert(old_val - Theta)
-                    x_i_new[i] = old_val - Theta
+                    if abs(old_val - Theta) < 1e-6:
+                        y_i_new[i] = 0
+                    else:
+                        x_elements[i] = T_x.insert(old_val - Theta)
+                        x_i_new[i] = old_val - Theta
                 else:
                     x_i_new[i] = 0
             #y_elements_dict[pair] = y_elements

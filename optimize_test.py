@@ -43,8 +43,13 @@ func_table = {pair:exp(-0.065*cost) for pair,cost in mcost.items()}
 rho_matrix = corresp_matrix(input_traffic=s_dict,output_traffic=d_dict,func_table=func_table)
 
 path_dict = {i:[p['path'] for p in path] for i,path in mpaths.items()}
-flow_optimize(graph=dict_pairs,corresp_matrix=rho_matrix,path_dict=path_dict)
+flow_optimize(graph=dict_pairs,corresp_matrix=rho_matrix,path_dict=path_dict,is_project_linear=False)
 
+for i,paths in path_dict.items():
+    cost = 0
+    for p in paths:
+        cost += dict_pairs.get_cost(p)
+    print(i,cost)
 """for dict_an in dict_pairs.graph_dict:
     for _,j in dict_an.items():
         print("{0}: {1}".format(j.pair,j.data.amount))"""
