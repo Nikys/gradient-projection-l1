@@ -1,7 +1,6 @@
 import random as rnd
 
-
-def project_linear(v,z,is_positive=False):
+def project_linear(v,z,is_positive=False, on_simplex=False):
     """
     Projecting vector of data on l1-ball by linear time
     :param v: vector of data
@@ -17,7 +16,7 @@ def project_linear(v,z,is_positive=False):
         v_abs = [abs(v[i]) for i in range(N)]
     v_norm = sum(v_abs)
     """Taking care of case when ||v||<=z -> w=v"""
-    if v_norm <= z:
+    if not on_simplex and v_norm <= z:
         return v
     w = [0] * N
     U = [i for i in range(N)]
@@ -74,7 +73,7 @@ def project_linear(v,z,is_positive=False):
     if rho == 0:
         print('Debug point')
     theta = (s - z) / rho
-    if is_positive:
+    if is_positive or on_simplex:
         for i in range(N):
             w[i] = max(v_abs[i] - theta, 0)
     else:
