@@ -85,7 +85,7 @@ class TransportEdge(Edge):
         self.data.set_amount(self.data.amount + amount)
 
     def get_cost(self):
-        return self.mincost * (1 + (self.amount / self.throughput) ** 4)
+        return self.data.mincost * (1 + (self.data.amount / self.data.throughput) ** 4)
 
 
 class TransportGraph:
