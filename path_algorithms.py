@@ -193,12 +193,14 @@ def path(previous, node_start, node_end):
     route.reverse()
     return route
 
+
 def min_paths(graph, pairs, max_k = 10):
     path_dict = dict()
     for p in pairs:
         if p not in path_dict:
             path_dict[p] = ksp_yen(graph=graph, node_start=p[0], node_end=p[1], max_k=max_k)
     return path_dict
+
 
 ## Finds mincost for path
 #
@@ -209,8 +211,9 @@ def min_paths(graph, pairs, max_k = 10):
 def mincost1(graph, path):
     sum_cost = 0
     for i in range(len(path)-1):
-        sum_cost += graph.get_edge(path[i],path[i+1]).data.cost
+        sum_cost += graph.get_edge(path[i],path[i+1]).data.mincost
     return sum_cost
+
 
 ## Finds mincost for list of paths
 #
@@ -227,6 +230,7 @@ def mincost2(graph, paths, selfcost = 0.05):
         if min_cost < 0 or cost < min_cost:
             min_cost = cost
     return min_cost
+
 
 ## Finds mincost for all lists of paths
 #

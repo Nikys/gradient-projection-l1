@@ -41,14 +41,29 @@ class Edge:
     def is_active(self):
         return self._active
 
+    def set_amount(self,amount):
+        self.data.set_amount(amount=amount)
+
+    def get_amount(self):
+        return self.data.amount
+
+    def add_users(self,amount):
+        self.data.set_amount(self.data.amount + amount)
+
+    def get_cost(self):
+        return self.mincost * (1 + (self.amount / self.throughput) ** 4)
+
 
 class TransportEdgeData:
-    __slots__ = ["length","cost","throughput"]
+    __slots__ = ["length","mincost","throughput","amount"]
 
-    def __init__(self, length, cost, throughput):
+    def __init__(self, length, mincost, throughput):
         self.length = length
-        self.cost = cost
+        self.mincost = mincost
         self.throughput = throughput
+
+    def set_amount(self,amount):
+        self.amount = amount
 
     def __eq__(self, other):
         if self.length == other.length:
@@ -121,3 +136,9 @@ class TransportGraph:
 
     def __iter__(self):
         return self.nodes_list.__iter__()
+
+    def get_cost(self,path):
+        cost = 0
+        for i in range(len(path)-1):
+            cost += self.get_edge(path[i],path[i+1]).get_cost()
+        return cost
