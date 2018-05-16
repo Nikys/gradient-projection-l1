@@ -41,18 +41,6 @@ class Edge:
     def is_active(self):
         return self._active
 
-    def set_amount(self,amount):
-        self.data.set_amount(amount=amount)
-
-    def get_amount(self):
-        return self.data.amount
-
-    def add_users(self,amount):
-        self.data.set_amount(self.data.amount + amount)
-
-    def get_cost(self):
-        return self.mincost * (1 + (self.amount / self.throughput) ** 4)
-
 
 class TransportEdgeData:
     __slots__ = ["length","mincost","throughput","amount"]
@@ -61,6 +49,7 @@ class TransportEdgeData:
         self.length = length
         self.mincost = mincost
         self.throughput = throughput
+        self.amount = 0
 
     def set_amount(self,amount):
         self.amount = amount
@@ -85,6 +74,18 @@ class TransportEdge(Edge):
 
     def __le__(self,other):
         return self.data < other.data
+
+    def set_amount(self,amount):
+        self.data.set_amount(amount=amount)
+
+    def get_amount(self):
+        return self.data.amount
+
+    def add_users(self,amount):
+        self.data.set_amount(self.data.amount + amount)
+
+    def get_cost(self):
+        return self.mincost * (1 + (self.amount / self.throughput) ** 4)
 
 
 class TransportGraph:
