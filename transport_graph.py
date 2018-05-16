@@ -98,12 +98,6 @@ class TransportGraph:
     def activate_node(self,i):
         self.nodes_list[i].activate()
 
-    def disactivate_node(self, i):
-        self.nodes_list[i].disactivate()
-
-    def activate_node(self, i):
-        self.nodes_list[i].activate()
-
     def disactivate_edge(self, i, j):
         if i < len(self.nodes_list) and j in self.graph_dict[i]:
             self.graph_dict[i][j].disactivate()
