@@ -2,6 +2,7 @@ from math import exp
 from path_algorithms import min_paths, mincost3
 from transport_graph import TransportGraph, TransportEdgeData
 from correspondence_matrix import corresp_matrix
+from flow_optimize import flow_optimize
 
 S = [0,1,2,3,4]
 D = [16,18,20,22,24]
@@ -20,9 +21,9 @@ dict_pairs = TransportGraph()
 for i in range(25):
     dict_pairs.add_node()
 
-def add_all_in_dictgraph(list_pairs, lens, dict_pairs, coeff):
+def add_all_in_dictgraph(list_pairs, lens, dict_pairs, coeff, throughput):
     for i,el in enumerate(list_pairs):
-        data = TransportEdgeData(lens[i],lens[i] * coeff, 0)
+        data = TransportEdgeData(lens[i],lens[i] * coeff, throughput)
         dict_pairs.add_pair(el[0],el[1],data)
 
 magistrals_lens = [4,10,3,3,5,1,2,6,9,2]
@@ -30,13 +31,20 @@ outs_lens = [6,9,3,8,5,1,10,8,5,3]
 ins_lens = [3,7,6,2,6,5,6,8,7,4]
 adds_lens = [1,6,4,3,9,10,4,6,10,1]
 
-add_all_in_dictgraph(magistrals,magistrals_lens, dict_pairs, 0.011)
-add_all_in_dictgraph(ins,ins_lens,dict_pairs,0.025)
-add_all_in_dictgraph(outs,outs_lens,dict_pairs,0.025)
-add_all_in_dictgraph(adds,adds_lens,dict_pairs,0.033)
+add_all_in_dictgraph(magistrals,magistrals_lens, dict_pairs, 0.011, 4)
+add_all_in_dictgraph(ins,ins_lens,dict_pairs,0.025, 2)
+add_all_in_dictgraph(outs,outs_lens,dict_pairs,0.025, 2)
+add_all_in_dictgraph(adds,adds_lens,dict_pairs,0.033, 1)
 
 
 mpaths = min_paths(graph=dict_pairs, pairs=W, max_k=10)
 mcost = mincost3(graph=dict_pairs, path_dict=mpaths)
 func_table = {pair:exp(-0.065*cost) for pair,cost in mcost.items()}
 rho_matrix = corresp_matrix(input_traffic=s_dict,output_traffic=d_dict,func_table=func_table)
+
+path_dict = {i:[p['path'] for p in path] for i,path in mpaths.items()}
+flow_optimize(graph=dict_pairs,corresp_matrix=rho_matrix,path_dict=path_dict)
+
+"""for dict_an in dict_pairs.graph_dict:
+    for _,j in dict_an.items():
+        print("{0}: {1}".format(j.pair,j.data.amount))"""
