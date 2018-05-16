@@ -30,12 +30,12 @@ def theta_project_sparse(T: RBTree,N,z):
                 v0 = v.key
                 rho0 = rho_t
                 s0 = s_t
-            if T.is_leaf(v):
+            if T.is_leaf(v) or v.left_amount == 0:
                 return (s0-z)/rho0
             return pivot_search(v.left,rho_t,s_t)
         else:
             """v<pivot"""
-            if T.is_leaf(v):
+            if T.is_leaf(v) or v.right_amount == 0:
                 return (s0-z)/rho0
             return pivot_search(v.right,rho,s)
     return pivot_search(T.root.left,0,0)
