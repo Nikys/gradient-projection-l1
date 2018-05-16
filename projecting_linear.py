@@ -79,5 +79,5 @@ def project_linear(v,z,is_positive=False, on_simplex=False):
     else:
         for i in range(N):
             w[i] = max(v_abs[i] - theta, 0) if v[i] > 0 else -max(v_abs[i] - theta, 0)
-    print('Iter',iter)
+    #print('Iter',iter)
     return w
