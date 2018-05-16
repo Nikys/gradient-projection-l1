@@ -143,3 +143,17 @@ class TransportGraph:
         for i in range(len(path)-1):
             cost += self.get_edge(path[i],path[i+1]).get_cost()
         return cost
+
+    def add_amount(self,path,x):
+        for i in range(len(path)-1):
+            self.get_edge(path[i],path[i+1]).add_users(x)
+
+    def change_amount(self,paths,x):
+        for i,path in enumerate(paths):
+            if abs(x[i]) > 1e-6:
+                self.add_amount(path,x[i])
+
+    def log_amount(self):
+        for dict_an in self.graph_dict:
+            for _, j in dict_an.items():
+                print("{0}: {1}".format(j.pair, j.data.amount))

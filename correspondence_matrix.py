@@ -8,7 +8,7 @@ def corresp_matrix(input_traffic,output_traffic,func_table):
     rho_input_sum = {j: sum([rho[i, j] for i in input_traffic.keys()]) for j in output_traffic.keys()}
     rho_output_sum = {i: sum([rho[i, j] for j in output_traffic.keys()]) for i in input_traffic.keys()}
     iter = 0
-    while(True):
+    while True:
         if iter > 0:
             rho_input_sum_sum_old = sum(rho_input_sum)
             rho_input_sum = {j: sum([rho[i, j] for i in input_traffic.keys()]) for j in output_traffic.keys()}
