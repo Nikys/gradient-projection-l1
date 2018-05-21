@@ -39,14 +39,3 @@ def theta_project_sparse(T: RBTree,N,z):
                 return (s0-z)/rho0
             return pivot_search(v.right,rho,s)
     return pivot_search(T.root.left,0,0)
-
-"""theta_vector = []
-theta_sum = 0
-v = [10,20,30,80,20,0,0]
-N = len(v)
-T = RBTree()
-for v_el in v:
-    #non-zero components, actually - positive
-    if abs(v_el) > 1e-6:
-        T.insert(v_el)
-"""
