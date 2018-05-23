@@ -63,9 +63,9 @@ class LinearWorker(ProjectionWorker):
         else:
             v_abs = self.vector_struct
         v_norm = sum(v_abs)
-        if self.project_type is ProjectionSurface.BALL and v_norm <= z + self.eps:
+        if self.project_type is ProjectionSurface.BALL and v_norm <= self.z + self.eps:
             return self.vector_struct
-        if self.project_type is ProjectionSurface.SPHERE and abs(v_norm - z) < self.eps:
+        if self.project_type is ProjectionSurface.SPHERE and abs(v_norm - self.z) < self.eps:
             return self.vector_struct
         theta = self.projector.theta(v_abs, self.z)
         if theta is None:
