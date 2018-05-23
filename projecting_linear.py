@@ -1,83 +1,89 @@
 import random as rnd
+from projection import *
 
-def project_linear(v,z,is_positive=False, on_simplex=False):
-    """
-    Projecting vector of data on l1-ball by linear time
-    :param v: vector of data
-    :param z: scalar that represents constraint for norm
-    :return: projected vector
-    """
-    eps = 1e-12
-    N = len(v)
 
-    if is_positive:
-        v_abs = v[:]
-    else:
-        v_abs = [abs(v[i]) for i in range(N)]
-    v_norm = sum(v_abs)
-    """Taking care of case when ||v||<=z -> w=v"""
-    if not on_simplex and v_norm <= z:
-        return v
-    w = [0] * N
-    U = [i for i in range(N)]
-    s = 0
-    rho = 0
-    iter = 0
-    G0 = [-1] * N
-    L0 = [-1] * N
-    # additional sum container that shows how much of initial elements values was "thrown away" in U->G\{k}
-    sum_lost = 0
-    while len(U) > 0:
-        iter += 1
-        lenU = len(U)
-        i = 0
-        j = 0
-        G = G0[:]
-        L = L0[:]
-        k0 = rnd.randint(0, lenU - 1)
-        k = U[k0]
-        ds = 0
-        if v_abs[k] < eps:
-            if v_norm - sum_lost < z:
-                # actual sum of elements in G is norm without threw elements and without previous s
-                s = v_norm - sum_lost
-                rho += lenU
-                U = []
-            elif k0 == lenU-1:
-                U = U[:k0]
-            elif k0 == 0:
-                U = U[1:]
-            else:
-                U = U[:k0] + U[k0 + 1:]
-            continue
+class ProjectionLinear(Projection):
+    def __init__(self):
+        super().__init__()
 
-        for m in U:
+    def theta(self, vector, z):
+        N = len(vector)
+        U = [i for i in range(N)]
+        s = 0
+        rho = 0
+        iter = 0
+        while len(U) > 0:
             iter += 1
-            if m == k:
-                ds += v_abs[m]
-            elif v_abs[m] >= v_abs[k]:
-                G[i] = m
-                ds += v_abs[m]
-                i += 1
-            elif v_abs[m] > 1e-6:
-                L[j] = m
-                j += 1
-        drho = i + 1
-        if (s + ds) - (rho + drho) * v_abs[k] < z:
-            s += ds
-            rho += drho
-            U = L[:j]
+            lenU = len(U)
+            i = 0
+            j = 0
+            G = [-1] * lenU
+            L = G[:]
+
+            k0 = rnd.randint(0, lenU - 1)
+            k = U[k0]
+            ds = 0
+
+            for m in U:
+                iter += 1
+                if m == k:
+                    ds += vector[m]
+                elif vector[m] >= vector[k]:
+                    G[i] = m
+                    ds += vector[m]
+                    i += 1
+                else:
+                    L[j] = m
+                    j += 1
+            drho = i + 1
+            if (s + ds) - (rho + drho) * vector[k] < z:
+                s += ds
+                rho += drho
+                U = L[:j]
+            else:
+                U = G[:i]
+        if rho == 0:
+            print('Debug point')
+            return None
+        return (s - z) / rho
+
+
+class LinearWorker(ProjectionWorker):
+    def __init__(self, vector_struct, z, project_type: ProjectionSurface):
+        super().__init__(vector_struct=vector_struct, z = z, project_type=project_type)
+        self.projector = ProjectionLinear()
+
+    def update(self, vector_struct):
+        self.vector_struct = vector_struct
+
+    def project(self):
+        N = len(self.vector_struct)
+        if self.project_type in (ProjectionSurface.BALL, ProjectionSurface.SPHERE):
+            v_abs = list(map(abs, self.vector_struct))
         else:
-            U = G[:i]
-            sum_lost += v_abs[k]
-    if rho == 0:
-        print('Debug point')
-    theta = (s - z) / rho
-    if is_positive or on_simplex:
-        for i in range(N):
-            w[i] = max(v_abs[i] - theta, 0)
-    else:
-        for i in range(N):
-            w[i] = max(v_abs[i] - theta, 0) if v[i] > 0 else -max(v_abs[i] - theta, 0)
-    #print('Iter',iter)
-    return w
+            v_abs = self.vector_struct
+        v_norm = sum(v_abs)
+        if self.project_type is ProjectionSurface.BALL and v_norm <= z + self.eps:
+            return self.vector_struct
+        if self.project_type is ProjectionSurface.SPHERE and abs(v_norm - z) < self.eps:
+            return self.vector_struct
+        theta = self.projector.theta(v_abs, self.z)
+        if theta is None:
+            print('Error while making linear projection!!!')
+            return None
+        w = [0] * N
+        if self.project_type in (ProjectionSurface.SPHERE, ProjectionSurface.BALL):
+            for i in range(N):
+                w[i] = max(v_abs[i] - theta, 0) if self.vector_struct[i] >= 0 else -max(v_abs[i] - theta, 0)
+        else:
+            for i in range(N):
+                w[i] = max(v_abs[i] - theta, 0)
+        return w
+
+pr = LinearWorker([-2,1,0,0],1,ProjectionSurface.SIMPLEX)
+v = pr.project()
+print(v)
+#pr = ProjectionLinear(project_type=ProjectionSurface.SIMPLEX)
+#v = pr.project([0.5,1,0,0],1)
+
+#print(v)

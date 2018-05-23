@@ -11,6 +11,7 @@ class RBTreeNode:
         self.right = None
         self.parent = None
 
+
 class RBTree:
     __slots__ = ['root','nil']
     def __init__(self):
