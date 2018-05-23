@@ -19,7 +19,7 @@ class RBTreeVector:
 
     def update(self,new_vector):
         for i,el in enumerate(new_vector):
-            if abs(new_vector[i] - el) < 1e-6:
+            if abs(self.vector[i] - el) < 1e-6:
                 continue
             if self.nodes[i] != self.tree.nil:
                 self.tree.delete_node(self.nodes[i])
