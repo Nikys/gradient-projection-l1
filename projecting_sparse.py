@@ -27,7 +27,7 @@ class RBTreeVector:
                 self.nodes[i] = self.tree.insert(el)
             else:
                 self.nodes[i] = self.tree.nil
-        self.vector = new_vector
+        self.vector = np.array(new_vector)
 
 
 class ProjectionSparse(Projection):
@@ -101,10 +101,10 @@ class SparseWorker(ProjectionWorker):
                 w[i] = max(v_abs[i] - theta, 0)
         return w
 
-pr = SparseWorker([-2,1,0,0],1,ProjectionSurface.SIMPLEX)
-v = pr.project()
+#pr = SparseWorker([-2,1,0,0],1,ProjectionSurface.SIMPLEX)
+#v = pr.project()
 
 #pr = ProjectionSparse(project_type=ProjectionSurface.SIMPLEX)
 #v = pr.project([0.5,1,0,0],1)
 
-print(v)
+#print(v)

@@ -1,4 +1,5 @@
 import random as rnd
+import numpy as np
 from projection import *
 
 
@@ -54,7 +55,7 @@ class LinearWorker(ProjectionWorker):
         self.projector = ProjectionLinear()
 
     def update(self, vector_struct):
-        self.vector_struct = vector_struct
+        self.vector_struct = np.array(vector_struct)
 
     def project(self):
         N = len(self.vector_struct)
@@ -78,11 +79,11 @@ class LinearWorker(ProjectionWorker):
         else:
             for i in range(N):
                 w[i] = max(v_abs[i] - theta, 0)
-        return w
+        return np.array(w)
 
-pr = LinearWorker([-2,1,0,0],1,ProjectionSurface.SIMPLEX)
-v = pr.project()
-print(v)
+#pr = LinearWorker([-2,1,0,0],1,ProjectionSurface.SIMPLEX)
+#v = pr.project()
+#print(v)
 #pr = ProjectionLinear(project_type=ProjectionSurface.SIMPLEX)
 #v = pr.project([0.5,1,0,0],1)
 
